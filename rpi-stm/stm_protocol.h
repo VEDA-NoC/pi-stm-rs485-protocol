@@ -2,15 +2,13 @@
 #define STM_PROTOCOL_H
 
 /*
- * P2.1 STM32 <-> Raspberry Pi Modbus RTU protocol draft v0.1
+ * VEDA VMS STM32 <-> RPI Modbus RTU protocol v0.2
  *
  * - Wire framing/CRC는 Modbus library가 담당한다.
  * - 이 header는 16-bit Modbus register 주소와 field 의미를 공유한다.
  * - packed struct의 메모리를 UART로 직접 보내지 않는다.
  * - multi-register integer는 high register first다.
  * - enum 선언은 symbolic value용이며 wire에는 uint16_t로 encode한다.
- *
- * Draft: 팀 검토 전 구현 계약으로 확정하지 않는다.
  */
 
 #include <stdint.h>
@@ -56,7 +54,8 @@
  */
 #define STM_PROTOCOL_BASE_POLL_PERIOD_MS UINT32_C(500)
 #define STM_PROTOCOL_SWEEP_BUDGET_MS UINT32_C(700)
-#define STM_PROTOCOL_RESPONSE_TIMEOUT_MS UINT32_C(30)
+/* Measured round trip: about 36 ms at about 2.5 m; 50 ms includes margin. */
+#define STM_PROTOCOL_RESPONSE_TIMEOUT_MS UINT32_C(50)
 #define STM_PROTOCOL_OFFLINE_PROBE_PERIOD_MS UINT32_C(1000)
 #define STM_PROTOCOL_INLINE_RETRY_COUNT UINT8_C(0)
 #define STM_PROTOCOL_EVENT_DRAIN_PER_NODE_PER_SWEEP UINT8_C(1)
@@ -393,11 +392,11 @@ typedef enum {
  * - STOP_ACTUATOR: argument0 = stage mask, argument1 = 0
  * - ACK_EVENT: argument0/1 = event_sequence high/low
  * - ACK_EVENT_STATUS: argument0/1 = 확인한 dropped_event_count high/low
- * - ACK_RESTART: argument0/1 = Pi가 할당한 boot_session_id high/low
- * - SYNC_TIME: argument0/1 = Pi의 Unix epoch seconds high/low
+ * - ACK_RESTART: argument0/1 = RPI가 할당한 boot_session_id high/low
+ * - SYNC_TIME: argument0/1 = RPI의 Unix epoch seconds high/low
  *
  * SYNC_TIME을 처리한 STM은 command를 수신한 순간의 local monotonic tick과 epoch
- * seconds를 RAM에 함께 저장한다. STM은 자체 NTP client가 아니며, Pi가 NTP로
+ * seconds를 RAM에 함께 저장한다. STM은 자체 NTP client가 아니며, RPI가 NTP로
  * 동기화된 system clock일 때만 이 command를 보내야 한다.
  */
 #define STM_STOP_STAGE1_MASK (UINT16_C(1) << 0)

@@ -30,7 +30,7 @@ package: test
 	cp tests/test_modbus.cpp $(PACKAGE_DIR)/tests/
 	cp Makefile CMakeLists.txt README-ko.md $(PACKAGE_DIR)/
 	cp ../stm_protocol.h $(PACKAGE_DIR)/
-	cp ../README-ko.md $(PACKAGE_DIR)/DATA-SPEC-ko.md
+	cp ../rpi-stm-interface.md $(PACKAGE_DIR)/DATA-SPEC-ko.md
 	tar -czf dist/p2-stm-modbus-tester-pi.tar.gz -C dist p2-stm-modbus-tester-pi
 	@echo "Created dist/p2-stm-modbus-tester-pi.tar.gz"
 
